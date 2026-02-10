@@ -1,4 +1,4 @@
-use crate::camera::platform_macos;
+use crate::camera::platform_macos::{self, ParserState};
 use anyhow::{Context, Result};
 use chrono::Utc;
 use serde::{Deserialize, Serialize};
@@ -38,12 +38,17 @@ impl CameraMonitor {
     pub fn start(&mut self) -> Result<mpsc::Receiver<CameraEvent>> {
         let (tx, rx) = mpsc::channel();
 
-        // Use the same proven predicate as webcam_log.sh:
-        // - subsystem: com.apple.cameracapture (AVCaptureSession events)
-        // - match startRunning / stopRunning method calls
-        // - syslog style for easy line-based parsing
-        // - --info level needed to capture these messages
-        let predicate = r#"(subsystem == "com.apple.cameracapture") AND (eventMessage CONTAINS "startRunning]" OR eventMessage CONTAINS "stopRunning]")"#;
+        // Auto-detect which macOS logging subsystem reports camera events.
+        // This mirrors the detection logic in webcam_log.sh — it checks the
+        // last 5 minutes of logs for each subsystem in priority order:
+        //   1. controlcenter  (macOS Sonoma 14+)
+        //   2. SkyLight       (some Ventura builds)
+        //   3. cameracapture  (older macOS)
+        //   4. cmio           (CoreMediaIO fallback)
+        let subsystem = platform_macos::detect_subsystem();
+        eprintln!("[webcam-tracker] Detected camera subsystem: {}", subsystem);
+
+        let predicate = platform_macos::predicate_for(&subsystem);
 
         let mut child = Command::new("log")
             .args(["stream", "--style", "syslog", "--predicate", predicate, "--info"])
@@ -60,12 +65,14 @@ impl CameraMonitor {
         thread::spawn(move || {
             use std::io::{BufRead, BufReader};
             let reader = BufReader::new(stdout);
+            let mut state = ParserState::default();
 
             for line in reader.lines() {
                 if let Ok(line) = line {
-                    if let Some(event) = platform_macos::parse_log_line(&line) {
+                    let events = platform_macos::parse_log_line(&line, &subsystem, &mut state);
+                    for event in events {
                         if tx_clone.send(event).is_err() {
-                            break;
+                            return;
                         }
                     }
                 }
