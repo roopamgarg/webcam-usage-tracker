@@ -13,7 +13,7 @@ export default function ExportButton() {
   return (
     <button
       onClick={handleExport}
-      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm font-medium flex items-center gap-2"
+      className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm font-semibold text-sm"
     >
       <svg
         className="w-4 h-4"
@@ -32,4 +32,3 @@ export default function ExportButton() {
     </button>
   );
 }
-

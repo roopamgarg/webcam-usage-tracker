@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import TrackingControls from "./TrackingControls";
 import TrackingPausedAlert from "./TrackingPausedAlert";
+import StatsCards from "./StatsCards";
 import SessionList from "./SessionList";
-import ExportButton from "./ExportButton";
 import { getSessions, getTrackingStatus, resumeTracking } from "../lib/commands";
 import type { Session } from "../types/session";
 
@@ -49,10 +49,10 @@ export default function Dashboard() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center h-screen bg-gray-50">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
+          <p className="text-gray-500 text-sm">Loading sessions...</p>
         </div>
       </div>
     );
@@ -63,26 +63,49 @@ export default function Dashboard() {
       {!isTracking && (
         <TrackingPausedAlert onResume={handleResumeFromAlert} />
       )}
-      <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
+
+      {/* Header */}
+      <header className="bg-slate-900 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Webcam Tracker</h1>
-              <p className="text-sm text-gray-500 mt-1">
-                Monitor and track webcam usage on your system
+              <div className="flex items-center gap-2 mb-2">
+                <span className="relative flex h-2.5 w-2.5">
+                  <span
+                    className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${
+                      isTracking ? "bg-green-400" : "bg-gray-400"
+                    }`}
+                  ></span>
+                  <span
+                    className={`relative inline-flex rounded-full h-2.5 w-2.5 ${
+                      isTracking ? "bg-green-400" : "bg-gray-400"
+                    }`}
+                  ></span>
+                </span>
+                <span className="text-xs font-semibold uppercase tracking-wider text-gray-300">
+                  {isTracking ? "System Active" : "System Paused"}
+                </span>
+              </div>
+              <h1 className="text-2xl font-bold">Webcam Session Log</h1>
+              <p className="text-sm text-gray-400 mt-1 max-w-lg">
+                Monitor and track detailed webcam usage history across your
+                system to ensure privacy compliance.
               </p>
             </div>
-            <div className="flex items-center gap-3 flex-wrap">
-              <TrackingControls
-                isTracking={isTracking}
-                onTrackingChange={handleTrackingChange}
-              />
-              <ExportButton />
-            </div>
+            <TrackingControls
+              isTracking={isTracking}
+              onTrackingChange={handleTrackingChange}
+            />
           </div>
         </div>
       </header>
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        {/* Stats */}
+        <StatsCards sessions={sessions} />
+
+        {/* Session Table */}
         <SessionList
           sessions={sessions}
           onSessionsUpdate={handleSessionsUpdate}
@@ -91,4 +114,3 @@ export default function Dashboard() {
     </div>
   );
 }
-
