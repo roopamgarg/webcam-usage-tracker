@@ -6,7 +6,23 @@ A privacy-focused macOS desktop application that monitors which apps are using y
 
 [**Download Webcam Tracker for macOS**](https://github.com/roopamgarg/webcam-usage-tracker/releases/latest)
 
-> Available for both Apple Silicon and Intel Macs. Requires macOS 13+ (Ventura or later). Open the `.dmg`, drag the app to Applications, and grant Full Disk Access when prompted.
+> Available for both Apple Silicon and Intel Macs. Requires macOS 13+ (Ventura or later).
+
+### Installation
+
+1. Download the `.dmg` from the link above and open it.
+2. Drag **Webcam Tracker** into your **Applications** folder.
+3. **Important — bypass the "developer cannot be verified" warning:**
+
+   The app is not signed with an Apple Developer ID, so macOS Gatekeeper will block it on first launch. To fix this, run the following command in **Terminal** after dragging the app to Applications:
+
+   ```bash
+   xattr -cr /Applications/Webcam\ Tracker.app
+   ```
+
+   Alternatively, you can **right-click** (or Control-click) the app in Finder and choose **Open** — macOS will give you the option to open it anyway.
+
+4. On first launch, grant **Full Disk Access** when prompted (System Settings → Privacy & Security → Full Disk Access).
 
 ## Screenshot
 

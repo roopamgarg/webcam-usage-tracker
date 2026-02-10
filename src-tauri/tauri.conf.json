@@ -24,7 +24,12 @@
   },
   "bundle": {
     "active": true,
-    "targets": "all"
+    "targets": "all",
+    "macOS": {
+      "signing": {
+        "identity": "-"
+      }
+    }
   },
   "plugins": {}
 }
