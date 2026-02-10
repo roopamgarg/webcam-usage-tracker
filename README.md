@@ -4,9 +4,13 @@ A privacy-focused macOS desktop application that monitors which apps are using y
 
 ## Download
 
-[**Download Webcam Tracker for macOS (Apple Silicon)**](https://github.com/AeroArtz/webcam-tracker/releases/latest/download/Webcam.Tracker_1.0.0_aarch64.dmg)
+[**Download Webcam Tracker for macOS**](https://github.com/roopamgarg/webcam-usage-tracker/releases/latest)
 
-> Requires macOS 13+ (Ventura or later). Open the `.dmg`, drag the app to Applications, and grant Full Disk Access when prompted.
+> Available for both Apple Silicon and Intel Macs. Requires macOS 13+ (Ventura or later). Open the `.dmg`, drag the app to Applications, and grant Full Disk Access when prompted.
+
+## Screenshot
+
+![Webcam Tracker Dashboard](assets/dashboard.png)
 
 ## What It Does
 
@@ -99,8 +103,8 @@ Reading from the `com.apple.cameracapture` log subsystem requires **Full Disk Ac
 
 ```bash
 # Clone the repo
-git clone https://github.com/your-username/webcam-tracker.git
-cd webcam-tracker
+git clone https://github.com/roopamgarg/webcam-usage-tracker.git
+cd webcam-usage-tracker
 
 # Install frontend dependencies
 npm install
