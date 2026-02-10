@@ -97,15 +97,15 @@ pub fn get_all_sessions(db_path: &Path) -> Result<Vec<Session>> {
     Ok(sessions)
 }
 
-pub fn get_active_session(db_path: &Path) -> Result<Option<Session>> {
+pub fn get_active_sessions(db_path: &Path) -> Result<Vec<Session>> {
     let conn = Connection::open(db_path)?;
-    
+
     let mut stmt = conn.prepare(
         "SELECT id, app_name, start_time, end_time, duration_secs, status FROM sessions
-         WHERE status = 'running' ORDER BY start_time DESC LIMIT 1",
+         WHERE status = 'running' ORDER BY start_time DESC",
     )?;
-    
-    let mut session_iter = stmt.query_map([], |row| {
+
+    let session_iter = stmt.query_map([], |row| {
         Ok(Session {
             id: Some(row.get(0)?),
             app_name: row.get(1)?,
@@ -118,12 +118,13 @@ pub fn get_active_session(db_path: &Path) -> Result<Option<Session>> {
             status: string_to_status(&row.get::<_, String>(5)?),
         })
     })?;
-    
-    if let Some(session) = session_iter.next() {
-        Ok(Some(session?))
-    } else {
-        Ok(None)
+
+    let mut sessions = Vec::new();
+    for session in session_iter {
+        sessions.push(session?);
     }
+
+    Ok(sessions)
 }
 
 fn status_to_string(status: &SessionStatus) -> &str {

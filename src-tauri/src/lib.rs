@@ -42,10 +42,10 @@ pub fn run() {
         })
         .on_window_event(|window, event| {
             if let tauri::WindowEvent::CloseRequested { .. } = event {
-                // Graceful shutdown - close active sessions
+                // Graceful shutdown - close all active sessions
                 if let Some(session_manager) = window.try_state::<Mutex<session::SessionManager>>() {
                     if let Ok(manager) = session_manager.lock() {
-                        let _ = manager.end_active_session();
+                        let _ = manager.end_all_active_sessions();
                     }
                 }
             }
@@ -119,12 +119,15 @@ fn start_camera_monitoring(
                                         let _ = app.emit("session-updated", ());
                                     }
                                 }
-                                camera::CameraEvent::Stopped { .. } => {
+                                camera::CameraEvent::Stopped { app_name, .. } => {
                                     let manager = session_manager.lock().unwrap();
-                                    if manager.end_active_session().is_ok() {
-                                        drop(manager);
-                                        let _ = app.emit("session-ended", ());
-                                        let _ = app.emit("session-updated", ());
+                                    match manager.end_session_for_app(&app_name) {
+                                        Ok(true) => {
+                                            drop(manager);
+                                            let _ = app.emit("session-ended", ());
+                                            let _ = app.emit("session-updated", ());
+                                        }
+                                        _ => {}
                                     }
                                 }
                             }

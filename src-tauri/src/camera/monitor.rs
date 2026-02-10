@@ -8,8 +8,14 @@ use std::thread;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum CameraEvent {
-    Started { app_name: String, timestamp: chrono::DateTime<Utc> },
-    Stopped { timestamp: chrono::DateTime<Utc> },
+    Started {
+        app_name: String,
+        timestamp: chrono::DateTime<Utc>,
+    },
+    Stopped {
+        app_name: String,
+        timestamp: chrono::DateTime<Utc>,
+    },
 }
 
 pub struct CameraMonitor {
@@ -24,7 +30,7 @@ impl CameraMonitor {
             is_running: false,
         }
     }
-    
+
     pub fn is_running(&self) -> bool {
         self.is_running
     }
@@ -32,15 +38,15 @@ impl CameraMonitor {
     pub fn start(&mut self) -> Result<mpsc::Receiver<CameraEvent>> {
         let (tx, rx) = mpsc::channel();
 
-        // Spawn log stream process
+        // Use the same proven predicate as webcam_log.sh:
+        // - subsystem: com.apple.cameracapture (AVCaptureSession events)
+        // - match startRunning / stopRunning method calls
+        // - syslog style for easy line-based parsing
+        // - --info level needed to capture these messages
+        let predicate = r#"(subsystem == "com.apple.cameracapture") AND (eventMessage CONTAINS "startRunning]" OR eventMessage CONTAINS "stopRunning]")"#;
+
         let mut child = Command::new("log")
-            .args([
-                "stream",
-                "--predicate",
-                "subsystem == 'com.apple.cmio'",
-                "--style",
-                "ndjson",
-            ])
+            .args(["stream", "--style", "syslog", "--predicate", predicate, "--info"])
             .stdout(Stdio::piped())
             .stderr(Stdio::null())
             .spawn()
@@ -54,7 +60,7 @@ impl CameraMonitor {
         thread::spawn(move || {
             use std::io::{BufRead, BufReader};
             let reader = BufReader::new(stdout);
-            
+
             for line in reader.lines() {
                 if let Ok(line) = line {
                     if let Some(event) = platform_macos::parse_log_line(&line) {
@@ -66,8 +72,6 @@ impl CameraMonitor {
             }
         });
 
-        // We can't clone receivers, so we don't store it
-        // Just track that we're running
         self.is_running = true;
         Ok(rx)
     }

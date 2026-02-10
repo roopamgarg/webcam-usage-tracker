@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import TrackingControls from "./TrackingControls";
+import TrackingPausedAlert from "./TrackingPausedAlert";
 import SessionList from "./SessionList";
 import ExportButton from "./ExportButton";
-import { getSessions, getTrackingStatus } from "../lib/commands";
+import { getSessions, getTrackingStatus, resumeTracking } from "../lib/commands";
 import type { Session } from "../types/session";
 
 export default function Dashboard() {
@@ -33,6 +34,15 @@ export default function Dashboard() {
     loadData();
   };
 
+  const handleResumeFromAlert = async () => {
+    try {
+      await resumeTracking();
+      loadData();
+    } catch (error) {
+      console.error("Error resuming tracking:", error);
+    }
+  };
+
   const handleSessionsUpdate = () => {
     loadData();
   };
@@ -50,6 +60,9 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {!isTracking && (
+        <TrackingPausedAlert onResume={handleResumeFromAlert} />
+      )}
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">

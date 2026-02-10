@@ -127,23 +127,24 @@ pub fn grant_consent(
 
 #[tauri::command]
 pub fn check_log_access() -> Result<bool, String> {
-    // Try to run log stream and see if it works
+    // Verify we can read from the cameracapture subsystem (requires Full Disk Access)
     use std::process::Command;
-    
+
     let output = Command::new("log")
-        .args(["stream", "--predicate", "subsystem == 'com.apple.cmio'", "--style", "ndjson"])
+        .args([
+            "show",
+            "--last",
+            "10s",
+            "--predicate",
+            r#"subsystem == "com.apple.cameracapture""#,
+            "--info",
+        ])
         .stdout(std::process::Stdio::null())
         .stderr(std::process::Stdio::null())
-        .spawn();
-    
+        .output();
+
     match output {
-        Ok(mut child) => {
-            // Give it a moment, then kill it
-            std::thread::sleep(std::time::Duration::from_millis(100));
-            let _ = child.kill();
-            let _ = child.wait();
-            Ok(true)
-        }
+        Ok(result) => Ok(result.status.success()),
         Err(_) => Ok(false),
     }
 }
