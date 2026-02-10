@@ -53,57 +53,49 @@ export default function StatsCards({ sessions }: StatsCardsProps) {
     {
       label: "Total Sessions",
       value: totalSessions.toLocaleString(),
+      sublabel: "all time",
+      iconBg: "bg-sage-50",
+      iconColor: "text-sage-400",
       icon: (
-        <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-          <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M4 5a2 2 0 00-2 2v6a2 2 0 002 2h8a2 2 0 002-2v-1.5l3.293 3.293A1 1 0 0019 14.086V5.914a1 1 0 00-1.707-.707L14 8.5V7a2 2 0 00-2-2H4z" />
-          </svg>
-        </div>
+        <svg className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M4 5a2 2 0 00-2 2v6a2 2 0 002 2h8a2 2 0 002-2v-1.5l3.293 3.293A1 1 0 0019 14.086V5.914a1 1 0 00-1.707-.707L14 8.5V7a2 2 0 00-2-2H4z" />
+        </svg>
       ),
     },
     {
       label: "Active Now",
       value: activeSessions.toString(),
+      sublabel: activeSessions > 0 ? "cameras in use" : "no active cameras",
+      iconBg: "bg-success-50",
+      iconColor: "text-success-500",
       icon: (
-        <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
-          <svg className="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              fillRule="evenodd"
-              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z"
-              clipRule="evenodd"
-            />
-          </svg>
-        </div>
+        <svg className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" />
+        </svg>
       ),
     },
     {
       label: "Avg Duration",
       value: formatAvgDuration(avgDurationSecs),
+      sublabel: "per session",
+      iconBg: "bg-violet-50",
+      iconColor: "text-violet-500",
       icon: (
-        <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
-          <svg className="w-5 h-5 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              fillRule="evenodd"
-              d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 000-1.5h-3.25V5z"
-              clipRule="evenodd"
-            />
-          </svg>
-        </div>
+        <svg className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 000-1.5h-3.25V5z" clipRule="evenodd" />
+        </svg>
       ),
     },
     {
       label: "Last Access",
       value: lastAccess,
+      sublabel: "most recent",
+      iconBg: "bg-warning-50",
+      iconColor: "text-warning-500",
       icon: (
-        <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-          <svg className="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              fillRule="evenodd"
-              d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 000-1.5h-3.25V5z"
-              clipRule="evenodd"
-            />
-          </svg>
-        </div>
+        <svg className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 000-1.5h-3.25V5z" clipRule="evenodd" />
+        </svg>
       ),
     },
   ];
@@ -113,20 +105,24 @@ export default function StatsCards({ sessions }: StatsCardsProps) {
       {stats.map((stat) => (
         <div
           key={stat.label}
-          className="bg-white rounded-xl border border-gray-200 px-5 py-4 flex items-center gap-4"
+          className="bg-white rounded-xl p-5 shadow-card hover:shadow-card-hover transition-shadow duration-300 cursor-default"
         >
-          <div className="flex-1 min-w-0">
-            <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">
-              {stat.label}
-            </p>
-            <p className="text-2xl font-bold text-gray-900 mt-0.5">
-              {stat.value}
-            </p>
+          <div className="flex items-start justify-between mb-4">
+            <div className={`w-10 h-10 rounded-lg ${stat.iconBg} ${stat.iconColor} flex items-center justify-center`}>
+              {stat.icon}
+            </div>
           </div>
-          {stat.icon}
+          <p className="text-2xl font-bold text-neutral-900 tracking-tight">
+            {stat.value}
+          </p>
+          <p className="text-sm font-medium text-neutral-600 mt-0.5">
+            {stat.label}
+          </p>
+          <p className="text-xs text-neutral-400 mt-0.5">
+            {stat.sublabel}
+          </p>
         </div>
       ))}
     </div>
   );
 }
-

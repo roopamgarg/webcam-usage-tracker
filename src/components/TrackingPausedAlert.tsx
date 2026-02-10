@@ -6,13 +6,13 @@ export default function TrackingPausedAlert({
   onResume,
 }: TrackingPausedAlertProps) {
   return (
-    <div className="bg-amber-50 border-b border-amber-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+    <div className="bg-warning-50 border-b border-warning-100">
+      <div className="max-w-6xl mx-auto px-6 py-3">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="flex-shrink-0">
+            <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-warning-100 flex items-center justify-center">
               <svg
-                className="h-5 w-5 text-amber-500"
+                className="h-4 w-4 text-warning-600"
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >
@@ -23,19 +23,18 @@ export default function TrackingPausedAlert({
                 />
               </svg>
             </div>
-            <p className="text-sm font-medium text-amber-800">
-              Tracking is paused — webcam activity is not being recorded.
+            <p className="text-sm font-semibold text-neutral-800">
+              Monitoring is paused — webcam activity is not being recorded
             </p>
           </div>
           <button
             onClick={onResume}
-            className="flex-shrink-0 px-4 py-1.5 text-sm font-medium rounded-md bg-amber-600 text-white hover:bg-amber-700 transition-colors duration-150 shadow-sm"
+            className="flex-shrink-0 px-4 py-1.5 text-sm font-semibold rounded-full bg-neutral-900 text-white hover:bg-neutral-800 transition-colors duration-200"
           >
-            Resume Tracking
+            Resume
           </button>
         </div>
       </div>
     </div>
   );
 }
-

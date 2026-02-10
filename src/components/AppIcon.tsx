@@ -9,7 +9,7 @@ interface AppIconProps {
   size?: number;
 }
 
-export default function AppIcon({ appName, size = 28 }: AppIconProps) {
+export default function AppIcon({ appName, size = 40 }: AppIconProps) {
   const [iconUrl, setIconUrl] = useState<string | null>(
     iconCache.get(appName) ?? null
   );
@@ -43,26 +43,24 @@ export default function AppIcon({ appName, size = 28 }: AppIconProps) {
   }, [appName]);
 
   if (!loaded) {
-    // Placeholder while loading
     return (
       <div
-        className="rounded-md bg-gray-100 animate-pulse flex-shrink-0"
+        className="rounded-lg bg-neutral-100 animate-pulse flex-shrink-0"
         style={{ width: size, height: size }}
       />
     );
   }
 
   if (!iconUrl) {
-    // Fallback: generic camera icon
     return (
       <div
-        className="rounded-md bg-gray-100 flex items-center justify-center flex-shrink-0"
+        className="rounded-lg bg-neutral-100 flex items-center justify-center flex-shrink-0"
         style={{ width: size, height: size }}
       >
         <svg
-          className="text-gray-400"
-          width={size * 0.6}
-          height={size * 0.6}
+          className="text-neutral-400"
+          width={size * 0.5}
+          height={size * 0.5}
           viewBox="0 0 20 20"
           fill="currentColor"
         >
@@ -80,9 +78,8 @@ export default function AppIcon({ appName, size = 28 }: AppIconProps) {
     <img
       src={iconUrl}
       alt={`${appName} icon`}
-      className="rounded-md flex-shrink-0"
+      className="rounded-lg flex-shrink-0"
       style={{ width: size, height: size }}
     />
   );
 }
-

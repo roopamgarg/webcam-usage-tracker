@@ -49,75 +49,72 @@ export default function SessionRow({ session }: SessionRowProps) {
 
   const isRunning = session.status === "running";
 
-  // Extract process name (lowercase for subtitle)
-  const processName = session.app_name.toLowerCase().replace(/\s+/g, "_") + ".exe";
-
   return (
-    <tr className="hover:bg-gray-50/50 transition-colors">
+    <div className="grid grid-cols-12 gap-4 items-center px-6 py-4 hover:bg-neutral-50 transition-colors duration-150">
       {/* Application */}
-      <td className="px-6 py-4">
+      <div className="col-span-12 sm:col-span-4">
         <div className="flex items-center gap-3">
           <div className="relative flex-shrink-0">
-            <AppIcon appName={session.app_name} size={36} />
+            <AppIcon appName={session.app_name} size={40} />
             {isRunning && (
-              <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-white" />
+              <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-sage-400 rounded-full border-2 border-white" />
             )}
           </div>
           <div className="min-w-0">
-            <p className="text-sm font-semibold text-gray-900 truncate">
+            <p className="text-sm font-semibold text-neutral-900 truncate">
               {session.app_name}
             </p>
-            <p className="text-xs text-gray-400 truncate">{processName}</p>
+            <p className="text-xs text-neutral-400 truncate">
+              {session.app_name.toLowerCase().replace(/\s+/g, ".")}
+            </p>
           </div>
         </div>
-      </td>
+      </div>
 
       {/* Date & Time */}
-      <td className="px-6 py-4 whitespace-nowrap">
-        <p className="text-sm font-medium text-gray-900">
+      <div className="col-span-6 sm:col-span-3">
+        <p className="text-sm font-medium text-neutral-800">
           {formatDate(session.start_time)}
         </p>
-        <p className="text-xs text-gray-400">{formatTime(session.start_time)}</p>
-      </td>
+        <p className="text-xs text-neutral-500">{formatTime(session.start_time)}</p>
+      </div>
 
       {/* Duration */}
-      <td className="px-6 py-4 whitespace-nowrap">
-        <span className="text-sm font-medium text-gray-900">
-          {isRunning ? (
-            <span className="inline-flex items-center gap-1.5">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-              </span>
-              Active
+      <div className="col-span-3 sm:col-span-2">
+        {isRunning ? (
+          <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-sage-500">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sage-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-sage-400"></span>
             </span>
-          ) : (
-            formatDuration(session.duration_secs)
-          )}
-        </span>
-      </td>
+            Live
+          </span>
+        ) : (
+          <span className="text-sm font-medium text-neutral-800 font-mono">
+            {formatDuration(session.duration_secs)}
+          </span>
+        )}
+      </div>
 
       {/* Status */}
-      <td className="px-6 py-4 whitespace-nowrap">
+      <div className="col-span-3 sm:col-span-1">
         {isRunning ? (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-green-50 text-green-700 border border-green-200">
-            <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-sage-50 text-sage-600">
             Active
           </span>
         ) : (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-yellow-50 text-yellow-700 border border-yellow-200">
-            <span className="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-neutral-100 text-neutral-500">
             Ended
           </span>
         )}
-      </td>
+      </div>
 
       {/* Actions */}
-      <td className="px-6 py-4 whitespace-nowrap text-right">
+      <div className="hidden sm:flex col-span-2 justify-end">
         <button
           onClick={handleOpenCameraSettings}
-          title={`Opens System Settings → Camera where you can toggle off access for ${session.app_name}`}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg text-gray-500 hover:text-red-600 hover:bg-red-50 border border-transparent hover:border-red-200 transition-all duration-150"
+          title={`Opens System Settings → Camera to manage access for ${session.app_name}`}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg text-neutral-600 border border-neutral-200 hover:text-error-600 hover:border-error-100 hover:bg-error-50 transition-all duration-200"
         >
           <svg className="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
             <path
@@ -126,9 +123,9 @@ export default function SessionRow({ session }: SessionRowProps) {
               clipRule="evenodd"
             />
           </svg>
-          Revoke Access
+          Manage
         </button>
-      </td>
-    </tr>
+      </div>
+    </div>
   );
 }
