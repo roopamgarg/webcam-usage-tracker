@@ -157,3 +157,16 @@ pub fn get_app_icon(app_name: String) -> Result<Option<String>, String> {
     }
 }
 
+#[tauri::command]
+pub fn open_camera_settings() -> Result<(), String> {
+    use std::process::Command;
+
+    // Opens macOS System Settings → Privacy & Security → Camera
+    Command::new("open")
+        .arg("x-apple.systempreferences:com.apple.preference.security?Privacy_Camera")
+        .spawn()
+        .map_err(|e| format!("Failed to open camera settings: {}", e))?;
+
+    Ok(())
+}
+

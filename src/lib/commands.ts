@@ -45,3 +45,7 @@ export async function getAppIcon(appName: string): Promise<string | null> {
   return await invoke("get_app_icon", { appName });
 }
 
+export async function openCameraSettings(): Promise<void> {
+  return await invoke("open_camera_settings");
+}
+

@@ -61,6 +61,7 @@ pub fn run() {
             commands::grant_consent,
             commands::check_log_access,
             commands::get_app_icon,
+            commands::open_camera_settings,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
