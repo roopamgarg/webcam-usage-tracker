@@ -41,3 +41,7 @@ export async function checkLogAccess(): Promise<boolean> {
   return await invoke("check_log_access");
 }
 
+export async function getAppIcon(appName: string): Promise<string | null> {
+  return await invoke("get_app_icon", { appName });
+}
+

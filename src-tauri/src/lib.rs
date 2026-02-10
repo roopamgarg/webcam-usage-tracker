@@ -1,6 +1,7 @@
 mod camera;
 mod commands;
 mod export;
+mod icons;
 mod session;
 mod storage;
 
@@ -59,6 +60,7 @@ pub fn run() {
             commands::check_consent,
             commands::grant_consent,
             commands::check_log_access,
+            commands::get_app_icon,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

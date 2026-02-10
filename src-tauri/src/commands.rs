@@ -149,3 +149,11 @@ pub fn check_log_access() -> Result<bool, String> {
     }
 }
 
+#[tauri::command]
+pub fn get_app_icon(app_name: String) -> Result<Option<String>, String> {
+    match crate::icons::get_icon_data_url(&app_name) {
+        Ok(data_url) => Ok(Some(data_url)),
+        Err(_) => Ok(None),
+    }
+}
+
